@@ -1,3 +1,0 @@
-C:/Users/vadim/CLionProjects/lab2_cpp/cmake-build-debug/CMakeFiles/..dir
-C:/Users/vadim/CLionProjects/lab2_cpp/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/vadim/CLionProjects/lab2_cpp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
