@@ -1,0 +1,1 @@
+add_executable(testsStatic testing.cpp  ../../catch.hpp)

@@ -16,17 +16,21 @@ namespace Lab2 {
 
         explicit Card(void);
 
-        ~Card(){};
 
         Card &setRang(int nrang);
 
         Card &setSuit(int nsuit);
 
         int getRang() const { return rang; };
+
         int getSuit() const { return suit; };
-        std::string formatString();
-        std::ostream &print(std::ostream &c);
-        int operator <=>(const Card &other);
+
+        std::string formatString() const;
+
+        std::ostream &print(std::ostream &c) const;
+
+//        int operator <=>(const Card &other);
+        std::strong_ordering operator<=>(const Card &other);
     };
 
 

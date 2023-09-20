@@ -5,7 +5,7 @@
 #ifndef _DECK_H
 #define _DECK_H
 #include <iostream>
-#include "../cards/cards.h"
+#include "../../SimpleClass/cards/cards.h"
 
 
 namespace Lab2 {
@@ -37,6 +37,13 @@ namespace Lab2 {
         std::ostream &printDeck(std::ostream &c);
         friend void operator >> (Deck &self, Deck &other);
 
+        void mixing();
+
+        int checkRepeated();
+
+        void deleteFirstElement();
+
+        Card &operator[] (int index);
     };
 
 }

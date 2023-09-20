@@ -24,6 +24,7 @@ namespace Lab2 {
                 changeCardsMatrix(rang, suit);
             }
         }
+        else if (cnt <= 0) throw std::invalid_argument("Error with count cards in deck");
         else {
             count = cnt;
             deck = new Card[count];
@@ -69,7 +70,7 @@ namespace Lab2 {
         for (int i = 0; i < count; i++) {
             deck[i].print(c);
         }
-        return c;
+        return c << std::endl;
     }
 
     void operator >> (Deck &self, Deck &other) {
@@ -104,6 +105,33 @@ namespace Lab2 {
 
     void Deck::changeCardsMatrix(int rang, int suit) {
         cardsMatrix[suit - 1][rang - 2] += 1;
+    }
+
+    int Deck::checkRepeated() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 13; j++) {
+                if (cardsMatrix[i][j] >= 2) return 1;
+            }
+        }
+        return 0;
+    }
+
+    void Deck::mixing() {
+
+        for (int i = count - 1; i >= 1; i--) {
+            int j = rand() % (i + 1);
+            Card tmp = deck[j];
+            deck[j] = deck[i];
+            deck[i] = tmp;
+        }
+    }
+
+    Card &Deck::operator[](int index) {
+        return deck[index];
+    }
+    void Deck::deleteFirstElement() {
+        if (count >= 1) count -= 1;
+        else throw std::invalid_argument("Your deck is empty");
     }
 }
 

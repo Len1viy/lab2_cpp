@@ -34,7 +34,7 @@ namespace Lab2 {
         return *this;
     }
 
-    std::string Card::formatString() {
+    std::string Card::formatString() const {
         std::string result = "";
         if (rang <= 10) result += std::to_string(rang);
         else if (rang == 11) result += "J";
@@ -42,24 +42,27 @@ namespace Lab2 {
         else if (rang == 13) result += "K";
         else if (rang == 14) result += "A";
         if (suit == 1) result += "\u2666"; // ♦
-        else if (suit == 2)  result += "\u2665"; // ♥
-        else if (suit == 3)  result += "\u2663"; // ♣
-        else if (suit == 4)  result += "\u2660"; // ♠
+        else if (suit == 2) result += "\u2665"; // ♥
+        else if (suit == 3) result += "\u2663"; // ♣
+        else if (suit == 4) result += "\u2660"; // ♠
         return result;
     }
 
-    std::ostream &Card::print(std::ostream &c) {
+    std::ostream &Card::print(std::ostream &c) const {
         return c << formatString() << " ";
     }
 
 
-    int Card::operator <=> (const Card &other) {
+//    int Card::operator <=> (const Card &other) {
+//        if (suit != other.getSuit()) throw std::invalid_argument("Different suits!");
+//        if (rang < other.rang) return -1;
+//        else if (rang > other.rang) return 1;
+//        else if (rang == other.rang) return 0;
+//        return 0;
+//    }
+    std::strong_ordering Card::operator<=>(const Card &other) {
         if (suit != other.getSuit()) throw std::invalid_argument("Different suits!");
-        if (rang < other.rang) return -1;
-        else if (rang > other.rang) return 1;
-        else if (rang == other.rang) return 0;
-        return 0;
+        return rang <=> other.rang;
     }
-
 
 }

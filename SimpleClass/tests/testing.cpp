@@ -49,6 +49,9 @@ TEST_CASE("CardMethods", "Setters") {
         Lab2::Card card1(4, 2);
         REQUIRE(card1.getRang() == 4);
         REQUIRE(card1.getSuit() == 2);
-        REQUIRE((card <=> card1) == 1);
+        Lab2::Card card2(10, 3);
+        REQUIRE(card <=> card1 == std::strong_ordering::greater);
+        REQUIRE(card1 <=> card == std::strong_ordering::less);
+        REQUIRE_THROWS(card2 <=> card);
     }
 }

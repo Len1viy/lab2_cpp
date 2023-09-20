@@ -10,22 +10,34 @@ set(CMAKE_CXX_STANDARD 20)
 # установка флагов компилятора: CMAKE_CXX_FLAGS += -Wall -Wextra
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
-# добавление подпроекта с библиотекой
-add_subdirectory(cards)
+add_subdirectory(SimpleClass/cards)
+add_subdirectory(SimpleClass/input)
+add_subdirectory(SimpleClass/tests)
 
-add_subdirectory(deck)
-add_subdirectory(input)
+add_executable(mainSimple SimpleClass/main.cpp)
 
-# добавление подпроекта с тестами
-add_subdirectory(tests)
+target_link_libraries(mainSimple cards)
+target_link_libraries(mainSimple input)
 
-# создание исполняемого файла для диалоговой программы
-add_executable(main main.cpp)
+add_subdirectory(DiffClass/deck)
+add_subdirectory(DiffClass/tests)
 
-# подключение библиотеки circle к диалоговой программе
-target_link_libraries(main cards)
-target_link_libraries(main deck)
-target_link_libraries(main input)
+add_executable(mainDiff DiffClass/main.cpp)
+
+target_link_libraries(mainDiff cards)
+target_link_libraries(mainDiff input)
+target_link_libraries(mainDiff deckDynamic)
+
+
+add_subdirectory(DiffClassSatic/deck)
+add_subdirectory(DiffClassSatic/tests)
+
+add_executable(mainDiffStatic DiffClassSatic/main.cpp)
+
+target_link_libraries(mainDiffStatic cards)
+target_link_libraries(mainDiffStatic input)
+target_link_libraries(mainDiffStatic deckStatic)
+
 
 
 # для сборки из консоли:
@@ -34,4 +46,3 @@ target_link_libraries(main input)
 # cd build      # переход в директорию сборки
 # cmake ..      # генерация файлов сборки на основе CMakeLists.txt
 # make          # сборка проекта
-add_executable(prog2 prog2/prog2.cpp prog2/circle/circle.cpp prog2/circle/circle.h)
