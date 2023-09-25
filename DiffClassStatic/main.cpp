@@ -21,6 +21,7 @@ int main() {
 //    dc.printDeck(std::cout);
     dc.printDeck(std::cout);
     dc1.printDeck(std::cout);
+    dc.pop(1).print(std::cout);
 //
 //    dc.push();
 //    dc.printDeck(std::cout);
@@ -31,15 +32,15 @@ int main() {
 //    newDeck.printDeck(std::cout);
 //    newDeck.orderByRang();
 //    newDeck.printDeck(std::cout);
-    Lab2::Deck dc2 = dc.oneSuitDeck(2);
-    dc2.printDeck(std::cout);
-    dc2.mixing();
-    dc2.printDeck(std::cout);
-    dc >> dc2;
-    dc2.printDeck(std::cout);
-    dc2.orderByRang();
-
-    dc2.printDeck(std::cout);
+//    Lab2::Deck dc2 = dc.oneSuitDeck(2);
+//    dc2.printDeck(std::cout);
+//    dc2.mixing();
+//    dc2.printDeck(std::cout);
+//    dc >> dc2;
+//    dc2.printDeck(std::cout);
+//    dc2.orderByRang();
+//
+//    dc2.printDeck(std::cout);
 
     return 0;
 }

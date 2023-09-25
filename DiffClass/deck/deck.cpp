@@ -2,56 +2,102 @@
 // Created by vadim on 17.09.2023.
 //
 
+// Написать копирующий и перемещающий конструкторы
+
 #include "deck.h"
 
-// Добавление и удаление карт также можно реализовать через сдвиг (head - удаление, tail - добавление)
 namespace Lab2 {
     Deck::Deck(int cnt) {
+        if (cnt < 0) throw std::invalid_argument("Error with count of cards in the deck");
+        countMax = cnt + reserveSize;
+        top = cnt;
+
         if (cnt > 52) {
             int rang, suit;
-            count = cnt;
-            deck = new Card[cnt];
+            deck = new Card[countMax];
             createCardsMatrix(0);
-
             deleteDublicateCardsMatrix();
-
-
-            for (int i = 52; i < count; i++) {
+            for (int i = 52; i < cnt; i++) {
                 rang = rand() % 13 + 2;
                 suit = rand() % 4 + 1;
                 deck[i].setRang(rang);
                 deck[i].setSuit(suit);
-                changeCardsMatrix(rang, suit);
+                changeCardsMatrix(rang, suit, 1);
             }
-        }
-        else if (cnt <= 0) throw std::invalid_argument("Error with count cards in deck");
-        else {
-            count = cnt;
-            deck = new Card[count];
+        } else {
+            deck = new Card[countMax];
             createCardsMatrix(0);
             deleteDublicateCardsMatrix();
         }
 
     }
+
     Deck::Deck(void) {
-        count = 52;
-        deck = new Card[count];
-        head = 0;
-        tail = count - 1;
+        countMax = 52 + reserveSize;
+        deck = new Card[countMax];
+        top = 52;
         createCardsMatrix(1);
         for (int i = 2; i < 15; i++) {
             for (int j = 1; j < 5; j++) {
-
-                deck[(i-2) * 4 + (j - 1)].setRang(i);
-                deck[(i-2) * 4 + (j - 1)].setSuit(j);
+                deck[(i - 2) * 4 + (j - 1)].setRang(i);
+                deck[(i - 2) * 4 + (j - 1)].setSuit(j);
             }
         }
     }
 
-    void Deck::createCardsMatrix(int cnt) {
+    // копирующий конструктор
+    Deck::Deck(const Deck &dc) : countMax(dc.countMax), top(dc.top) {
+        deck = new Card[countMax];
+        std::copy(dc.deck, dc.deck + dc.top, deck);
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 14; j++) {
-                cardsMatrix[i][j] = cnt;
+            for (int j = 0; j < 13; j++) {
+                cardsMatrix[i][j] = dc.cardsMatrix[i][j];
+            }
+        }
+    }
+
+    // перемещающий конструктор
+    Deck::Deck(Deck &&dc) noexcept: countMax(dc.countMax), top(dc.top), deck(dc.deck) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 13; j++) {
+                cardsMatrix[i][j] = dc.cardsMatrix[i][j];
+            }
+        }
+        dc.top = 0;
+        dc.deck = nullptr;
+    }
+
+    // копирующий оператор присваивания
+    Deck &Deck::operator=(const Lab2::Deck &dc) {
+        if (this != &dc) {
+            top = dc.top;
+            countMax = dc.countMax;
+            Card *new_arr = new Card[countMax];
+            delete[] deck;
+            deck = new_arr;
+            std::copy(dc.deck, dc.deck + top, deck);
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 13; j++) {
+                    cardsMatrix[i][j] = dc.cardsMatrix[i][j];
+                }
+            }
+        }
+        return *this;
+    }
+
+    void Deck::resize(int new_size) {
+        if (new_size < top) throw std::runtime_error("New size is too small!");
+        Card *new_deck = new Card[new_size];
+        std::move(deck, deck + top, new_deck);
+        delete[] deck;
+        countMax = new_size;
+        deck = new_deck;
+    }
+
+    void Deck::createCardsMatrix(int count) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 13; j++) {
+                cardsMatrix[i][j] = count;
             }
         }
     }
@@ -67,33 +113,25 @@ namespace Lab2 {
     }
 
     std::ostream &Deck::printDeck(std::ostream &c) {
-        for (int i = 0; i < count; i++) {
+        if (top == 0) return c << "Deck is empty!" << std::endl;
+        for (int i = top - 1; i >= 0; i--) {
             deck[i].print(c);
         }
-        return c << std::endl;
+        return c << std::endl << "----------------------------------" << std::endl;
     }
 
-    void operator >> (Deck &self, Deck &other) {
-        Deck newDeckForOther(other.count + 1);
-        Deck newDeckForSelf(self.count - 1);
-        for (int i = 0; i < other.count; i++) {
-            newDeckForOther.deck[i].setRang(other.deck[i].getRang());
-            newDeckForOther.deck[i].setSuit(other.deck[i].getSuit());
-        }
-        newDeckForOther.deck[other.count].setRang(self.deck[self.count - 1].getRang());
-        newDeckForOther.deck[other.count].setSuit(self.deck[self.count - 1].getSuit());
-        other = newDeckForOther;
-        for (int i = 0; i < self.count; i++) {
-            newDeckForSelf.deck[i].setRang(self.deck[i].getRang());
-            newDeckForSelf.deck[i].setSuit(self.deck[i].getSuit());
-        }
-        self = newDeckForSelf;
+    void operator>>(Deck &self, Deck &other) {
+        if (other.top == other.countMax) other.resize(other.countMax + other.reserveSize);
+        if (self.top == 0) throw std::runtime_error("Deck is empty!");
+        other.changeCardsMatrix(self.deck[self.top - 1].getRang(), self.deck[self.top - 1].getSuit(), 1);
+        self.changeCardsMatrix(self.deck[self.top - 1].getRang(), self.deck[self.top - 1].getSuit(), -1);
+        other.deck[other.top++] = self.deck[--self.top];
     }
 
 
     void Deck::deleteDublicateCardsMatrix() {
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < top; i++) {
             while (cardsMatrix[deck[i].getSuit() - 1][deck[i].getRang() - 2] == 1 && i < 52) {
                 deck[i].setSuit(rand() % 4 + 1);
                 deck[i].setRang(rand() % 13 + 2);
@@ -103,8 +141,8 @@ namespace Lab2 {
         }
     }
 
-    void Deck::changeCardsMatrix(int rang, int suit) {
-        cardsMatrix[suit - 1][rang - 2] += 1;
+    void Deck::changeCardsMatrix(int rang, int suit, int op) {
+        cardsMatrix[suit - 1][rang - 2] += 1 * op;
     }
 
     int Deck::checkRepeated() {
@@ -117,8 +155,7 @@ namespace Lab2 {
     }
 
     void Deck::mixing() {
-
-        for (int i = count - 1; i >= 1; i--) {
+        for (int i = top - 1; i >= 1; i--) {
             int j = rand() % (i + 1);
             Card tmp = deck[j];
             deck[j] = deck[i];
@@ -127,11 +164,139 @@ namespace Lab2 {
     }
 
     Card &Deck::operator[](int index) {
-        return deck[index];
+        return deck[top - index - 1];
     }
-    void Deck::deleteFirstElement() {
-        if (count >= 1) count -= 1;
-        else throw std::invalid_argument("Your deck is empty");
+
+    void Deck::push(const Card &card) {
+        if (top == countMax) resize(countMax + reserveSize);
+        deck[top++] = card;
+        changeCardsMatrix(card.getRang(), card.getSuit(), 1);
     }
+
+    void Deck::push(int nrang, int nsuit) {
+        if (top == countMax) resize(countMax + reserveSize);
+        Card card(nrang, nsuit);
+        deck[top++] = card;
+        changeCardsMatrix(nrang, nsuit, 1);
+    }
+
+    Card Deck::pop(int index) {
+        if (top == 0) throw std::runtime_error("Deck is empty!");
+        if (index >= top || index < 0) throw std::invalid_argument("Wrong index!");
+
+        changeCardsMatrix(deck[index].getRang(), deck[index].getSuit(), -1);
+        Card tmp = deck[top - index - 1];
+
+        for (int i = index + 1; i < top; i++) {
+            deck[i - 1] = deck[i];
+        }
+        deck[--top] = tmp;
+        return deck[top];
+    }
+
+    void Deck::operator+=(Deck const &dc) {
+        int new_top = top + dc.top;
+        if (new_top > countMax) resize(new_top + reserveSize);
+        for (int i = top; i < new_top; i++) {
+            deck[i].setRang(dc.deck[new_top - i - 1].getRang());
+            deck[i].setSuit(dc.deck[new_top - i - 1].getSuit());
+            changeCardsMatrix(deck[i].getRang(), deck[i].getSuit(), 1);
+        }
+    }
+// переделать оператор сложения
+    Deck Deck::operator+(Deck const &dc) {
+        Lab2::Deck newDeck;
+        newDeck.top = top + dc.top;
+        if (newDeck.top > countMax) newDeck.resize(newDeck.top + reserveSize);
+        for (int i = 0; i < newDeck.top; i++) {
+            if (i < top) {
+                newDeck.deck[i].setRang(deck[i].getRang());
+                newDeck.deck[i].setSuit(deck[i].getSuit());
+            } else {
+                newDeck.deck[i].setRang(dc.deck[i - top].getRang());
+                newDeck.deck[i].setSuit(dc.deck[i - top].getSuit());
+            }
+            changeCardsMatrix(newDeck.deck[i].getRang(), newDeck.deck[i].getSuit(), 1);
+        }
+        return newDeck;
+    }
+
+    Deck Deck::oneSuitDeck(int suit) {
+        if (suit < 1 || suit > 4) throw std::invalid_argument("Error with suit!");
+        Deck newDeck(0);
+        Card card;
+        card.setSuit(suit);
+        for (int i = 0; i < 13; i++) {
+            for (int j = 0; j < cardsMatrix[suit - 1][i]; j++) {
+                card.setRang(i + 2);
+                newDeck.push(card);
+            }
+        }
+        return newDeck;
+    }
+
+    void Deck::orderByRang() {
+        top = 0;
+        int cnt;
+        for (int i = 0; i < 13; i++) {
+            for (int j = 0; j < 4; j++) {
+                cnt = cardsMatrix[j][i];
+                for (int c = 0; c < cnt; c++) {
+                    push(i + 2, j + 1);
+                }
+                cardsMatrix[j][i] = cnt;
+            }
+        }
+    }
+
+    void Deck::orderBySuit() {
+        top = 0;
+        int cnt;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 13; j++) {
+                cnt = cardsMatrix[i][j];
+                for (int c = 0; c < cnt; c++) {
+                    push(j + 2, i + 1);
+                }
+                cardsMatrix[i][j] = cnt;
+            }
+        }
+    }
+
+    bool Deck::operator==(Deck &other) {
+        if (top == other.top) {
+            for (int i = 0; i < 13; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (cardsMatrix[j][i] != other.cardsMatrix[j][i]) {;
+                        return false;
+                    }
+                }
+            }
+        } else return false;
+        return true;
+    }
+
+    bool Deck::equal(const Deck &other) {
+        if (top == other.top) {
+            for (int i = 0; i < top; i++) {
+                if ((deck[i] <=> other.deck[i]) != std::strong_ordering::equal) return false;
+            }
+        } else return false;
+        return true;
+    }
+
+    void Deck::operator++() {
+        push();
+    }
+
+//    friend std::istream &operator<<(std::istream &, Deck &) {
+//        return;
+//    }
+
+//    friend std::ostream &operator>>(std::ostream &, Deck &);
+
+//    bool Deck::operator!() {
+//
+//    }
 }
 

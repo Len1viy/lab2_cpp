@@ -45,7 +45,7 @@ namespace Lab2 {
 
     void Deck::createCardsMatrix(int cnt) {
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 14; j++) {
+            for (int j = 0; j < 13; j++) {
                 cardsMatrix[i][j] = cnt;
             }
         }
@@ -62,6 +62,7 @@ namespace Lab2 {
     }
 
     std::ostream &Deck::printDeck(std::ostream &c) {
+        if (top == 0) return c << "Stack is empty!" << std::endl;
         for (int i = top - 1; i >= 0; i--) {
             deck[i].print(c);
         }
@@ -129,10 +130,20 @@ namespace Lab2 {
         changeCardsMatrix(nrang, nsuit , 1);
     }
 
-    Card Deck::pop() {
+    Card Deck::pop(int index) {
         if (top == 0) throw std::runtime_error("Deck is empty!");
-        changeCardsMatrix(deck[top - 1].getRang(), deck[top - 1].getSuit(), -1);
-        return deck[--top];
+        if (index >= top || index < 0) throw std::invalid_argument("Wrong index!");
+
+        changeCardsMatrix(deck[index].getRang(), deck[index].getSuit(), -1);
+        Card tmp = deck[top - index - 1];
+        std::cout << "OK" << std::endl;
+
+
+        for (int i = top - 1; i > top - index; i--) {
+            deck[i - 1] = deck[i];
+        }
+        deck[--top] = tmp;
+        return deck[top];
     }
 
     void Deck::operator+(Deck &dc) {
@@ -186,6 +197,16 @@ namespace Lab2 {
                 cardsMatrix[i][j] = cnt;
             }
         }
+    }
+    bool Deck::operator==(Deck &other) {
+        if (top == other.top) {
+            for (int i = 0; i < 13; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (cardsMatrix[j][i] != other.cardsMatrix[j][i]) return false;
+                }
+            }
+        }
+        return true;
     }
 }
 

@@ -31,6 +31,7 @@ namespace Lab2 {
 
 //        int operator <=>(const Card &other);
         std::strong_ordering operator<=>(const Card &other);
+        bool operator==(Card &other);
     };
 
 

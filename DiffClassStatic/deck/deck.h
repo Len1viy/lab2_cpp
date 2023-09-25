@@ -18,7 +18,6 @@ namespace Lab2 {
     public:
         Deck(void);
         Deck(int cnt);
-        ~Deck(){};
 
 
         Card *getDeck() {
@@ -26,7 +25,7 @@ namespace Lab2 {
         }
 
 
-        int getSize() {return top+1;}
+        int getSize() {return top;}
         auto getCardMatrix() {return cardsMatrix;}
         int getMaxSize() {return countMax;}
         void createCardsMatrix(int cnt);
@@ -34,7 +33,7 @@ namespace Lab2 {
         void changeCardsMatrix(int rang, int suit, int op);
         void push(const Card & = Lab2::Card());
         void push(int nrang, int nsuit);
-        Card pop();
+        Card pop(int index);
 
         void operator+(Deck &);
 
@@ -49,6 +48,7 @@ namespace Lab2 {
         Deck oneSuitDeck(int suit);
         void orderByRang();
         void orderBySuit();
+        bool operator==(Deck &);
     };
 
 }

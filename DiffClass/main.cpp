@@ -11,30 +11,68 @@
 int main() {
     system("chcp 65001");
     srand(time(0));
-    Lab2::Card card1;
-    card1.print(std::cout) << std::endl;
+//    Lab2::Deck dc(10);
+//    dc[4].setRang(10);
+//    dc[4].setSuit(2);
+//    dc[5].setRang(11);
+//    dc[5].setSuit(2);
+//    dc.printDeck(std::cout);
+//    Lab2::Deck dc1(dc);
+//    dc1.printDeck(std::cout);
+//    dc.printDeck(std::cout);
+//    dc1.printDeck(std::cout);
+//    dc1[2] = Lab2::Card (2, 1);
+//    dc1.printDeck(std::cout);
+//    dc.printDeck(std::cout);
+//    Lab2::Card card(10, 2);
+//    Lab2::Card card1 = dc.pop(5);
+//    dc.printDeck(std::cout);
+//    dc1.printDeck(std::cout);
+//    dc.printDeck(std::cout);
+//    card.print(std::cout);
+//    card1.print(std::cout);
+    Lab2::Deck dc(20);
+    Lab2::Deck dc1(10);
+    dc.printDeck(std::cout);
+    dc1.printDeck(std::cout);
+    Lab2::Deck dc2 = dc + dc1;
+    dc2.printDeck(std::cout);
+//    Lab2::Deck dc;
+//    dc.printDeck(std::cout);
+//    dc.mixing();
+//    Lab2::Deck dc1(dc);
+//    dc.printDeck(std::cout);
+//    dc1.printDeck(std::cout);
+//    Lab2::Deck test(30);
+//
+//    Lab2::Deck test1(test);
+//    test.printDeck(std::cout);
+//
+//    test1.printDeck(std::cout);
+//    if (test1 == test) {
+//        std::cout << "DA" << std::endl;
+//    } else std::cout << "NET" << std::endl;
+
+//    Lab2::Card card1;
+//    card1.print(std::cout) << std::endl;
 //    std::cout << card1.getRang() << std::endl;
 //    Lab2::Card card2 = Lab2::Card();
 //    Lab2::Card card3 = Lab2::Card();
 //    Lab2::Deck dc = Lab2::Deck();
-    Lab2::Deck dc(52);
-    Lab2::Deck dc1(4);
-    Lab2::Deck dc2(5);
+//    Lab2::Deck dc(10);
+//    dc.printDeck(std::cout);
+//    dc.pop(5).print(std::cout) << std::endl;
+//    dc.printDeck(std::cout);
+//    Lab2::Deck dc1(4);
+//    Lab2::Deck dc2(5);
 //    dc2.printDeck(std::cout);
 //    dc2.mixing();
 //    dc2.printDeck(std::cout);
-    dc.printDeck(std::cout);
-    dc1 >> dc;
-    dc[10].print(std::cout) << std::endl;
-    dc.printDeck(std::cout);
-    dc.deleteFirstElement();
-    dc.deleteFirstElement();
-
-    dc.deleteFirstElement();
-
-    dc.deleteFirstElement();
-
-    dc.printDeck(std::cout);
+//    std::cout << dc.getSize() << std::endl;
+//    dc.printDeck(std::cout);
+//    dc1 >> dc;
+//    dc[10].print(std::cout) << std::endl;
+//    dc.printDeck(std::cout);
 
 //    std::cout << std::endl;
 
