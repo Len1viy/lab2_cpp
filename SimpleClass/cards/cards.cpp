@@ -53,13 +53,7 @@ namespace Lab2 {
     }
 
 
-//    int Card::operator <=> (const Card &other) {
-//        if (suit != other.getSuit()) throw std::invalid_argument("Different suits!");
-//        if (rang < other.rang) return -1;
-//        else if (rang > other.rang) return 1;
-//        else if (rang == other.rang) return 0;
-//        return 0;
-//    }
+
     std::strong_ordering Card::operator<=>(const Card &other) {
         if (suit != other.getSuit()) throw std::invalid_argument("Different suits!");
         return rang <=> other.rang;

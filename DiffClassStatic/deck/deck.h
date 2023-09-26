@@ -17,37 +17,39 @@ namespace Lab2 {
         int cardsMatrix[4][13];
     public:
         Deck(void);
-        Deck(int cnt);
+        explicit Deck(int cnt);
 
 
         Card *getDeck() {
             return deck;
         }
 
-
-        int getSize() {return top;}
-        auto getCardMatrix() {return cardsMatrix;}
-        int getMaxSize() {return countMax;}
+        // nodiscard указывает что возвращаемое значение нельзя игнорировать и обязательно должно быть внесено в переменную
+        [[nodiscard]] int getSize() const {return top;}
+        [[nodiscard]] auto getCardMatrix() const {return cardsMatrix;}
+        [[nodiscard]] int getMaxSize() const {return countMax;}
         void createCardsMatrix(int cnt);
         void deleteDublicateCardsMatrix();
         void changeCardsMatrix(int rang, int suit, int op);
         void push(const Card & = Lab2::Card());
         void push(int nrang, int nsuit);
         Card pop(int index);
+        bool equal(const Deck &other);
 
-        void operator+(Deck &);
 
         std::ostream &printCardsMatrix(std::ostream &c);
         std::ostream &printDeck(std::ostream &c);
-        friend void operator >> (Deck &self, Deck &other);
+        void operator >> (Deck &other);
 
         void mixing();
 
         int checkRepeated();
         Card &operator[] (int index);
-        Deck oneSuitDeck(int suit);
+        Deck oneSuitDeck(int suit) const;
         void orderByRang();
         void orderBySuit();
+        Deck operator+(Deck const &) const;
+
         bool operator==(Deck &);
     };
 

@@ -17,11 +17,13 @@ namespace Lab2 {
         int cardsMatrix[4][13];
         int top = 0;
         void resize(int new_size);
+        Deck &setTop(int top);
     public:
         Deck(void);
-        Deck(int cnt);
+        explicit Deck(int cnt);
         ~Deck(){delete[] deck;}
-
+        // зачем нужен перемещающий конструктор
+        // Нужен для того, чтобы перемещать элементы из rvalue в lvalue
         Deck(const Deck &dc);
         Deck(Deck &&) noexcept;
 
@@ -43,7 +45,6 @@ namespace Lab2 {
 
 
         std::ostream &printCardsMatrix(std::ostream &c);
-        std::ostream &printDeck(std::ostream &c);
 
         void mixing();
 
@@ -54,18 +55,29 @@ namespace Lab2 {
         bool equal(const Deck &other);
 
 
-        friend std::istream & operator<<(std::istream &, Deck &);
-        friend std::ostream & operator>>(std::ostream &, Deck &);
-        friend void operator >> (Deck &self, Deck &other);
+        friend std::istream &operator>>(std::istream &, Deck &);
+        friend std::ostream &operator<<(std::ostream &, Deck &);
+//        std::ostream &operator<<(std::ostream &);
+        // объект класса << std::cout
+
+        Deck operator!() const;
+        void operator >> (Deck &other);
+        // a = b[i] // b - const
         Card &operator[] (int index);
-        Deck &operator=(const Deck&);
-        void operator+=(Deck const &);
-        Deck operator+(Deck const &);
+        // a[i] = b
+        const Card &operator[] (int index) const;
+        // сделать перемещающее присваивание
+        Deck &operator=(const Deck &);
+        Deck &operator=(Deck &&);
+        Deck &operator+=(const Deck &);
+        Deck operator+(Deck const &) const;
         bool operator==(Deck &);
-        void operator++();
-
+        // ссылка на класс
+        // 2 версии для каждого
+        Deck &operator++();
+        Deck operator++(int);
+        friend void input(int cnt, Deck &dc);
     };
-
 }
 
 #endif //_DECK_H
